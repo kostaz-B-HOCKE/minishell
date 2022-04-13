@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-char	*find_path(char *cmd, char **envp)
+char	*find_path(char *cmd, t_info *inf)
 {
 	char	**paths;
 	char	*path;
@@ -8,9 +8,9 @@ char	*find_path(char *cmd, char **envp)
 	char	*part_path;
 
 	i = 0;
-	while (ft_strnstr(envp[i], "PATH", 4) == 0)
+	while (ft_strnstr(inf->env[i], "PATH", 4) == 0)
 		i++;
-	paths = ft_split(envp[i] + 5, ':');
+	paths = ft_split(inf->env[i] + 5, ':');
 	i = 0;
 	while (paths[i])
 	{

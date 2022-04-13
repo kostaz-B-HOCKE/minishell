@@ -1,3 +1,4 @@
-clear
 make
+clear
 ./minishell
+#ls | wc

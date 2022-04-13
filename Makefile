@@ -2,8 +2,10 @@ NAME		= minishell
 
 SRB_DIR		= src/
 
+#SRB		= $(addprefix $(SRB_DIR), main1.c)
 SRB		= $(addprefix $(SRB_DIR), main.c execve_unil.c pipex.c init.c \
-					adoption_cmd.c)
+					adoption_cmd.c par.c shell_level.c utilus.c)
+
 #SRB		= $(addprefix $(SRB_DIR), main.c)
 
 OBJ			= $(SRB:.c=.o)
@@ -13,7 +15,6 @@ LIB			= libft/libft.a
 #CFLAGS		= -Wall -Wextra -Werror
 CFLAGS		=
 
-all:		$(LIB) $(NAME)
 
 RED			=	"\033[1;31m"
 BLUE		=	"\033[1;34m"
@@ -26,6 +27,8 @@ END			=	"\033[0m"
 #@echo ${YELLOW} "\n< .o files -> removed >\n" ${END}
 
 .PHONY:		all clean fclean re
+
+all:		$(LIB) $(NAME)
 
 $(NAME):	$(OBJ)
 			@gcc $(CFLAGS) -L /Users/$(USER)/.brew/opt/readline/lib/ -lreadline -L libft -lft -o ${NAME} ${OBJ}
