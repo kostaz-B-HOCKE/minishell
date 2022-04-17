@@ -4,7 +4,9 @@ SRB_DIR		= src/
 
 #SRB		= $(addprefix $(SRB_DIR), main1.c)
 SRB		= $(addprefix $(SRB_DIR), main.c execve_unil.c pipex.c init.c \
-					adoption_cmd.c par.c shell_level.c utilus.c)
+					adoption_cmd.c par.c shell_level.c utilus.c ft_dollar.c ft_qap.c \
+					utilus_free.c )
+# ft_dollar.c ft_qap.c
 
 #SRB		= $(addprefix $(SRB_DIR), main.c)
 

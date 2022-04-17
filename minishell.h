@@ -48,10 +48,14 @@ void	cheak_cmd(t_info *inf);
 int		adopt_cmd(t_info *inf);
 
 //parsing
-int	parsing_s(t_info *inf, char *str);
+char	*delete_spese(char *str);
+int		parsing_s(t_info *inf, char *str, char **env);
 void	two_mark(t_info *inf);
-void	one_mark(t_info *inf);
-
+char	*one_mark(t_info *inf, char *str, int *i);
+char	*ft_gap(char *str, int *i, char c);
+char	*ft_gap2(char *str, int *i, char c, char **env);
+char *ft_dollar(char *str, int *i, char **env);
+char	*ft_slesh(char *str, int *i);
 
 //info.c
 t_info	*init_info(char **env);
@@ -65,6 +69,8 @@ void	shell_level(t_info *inf);
 
 //utilus.c
 void	print_error(char *error, char *str);
+char	*ft_strjoin_free(char *s1, char *s2);
+
 
 
 #endif

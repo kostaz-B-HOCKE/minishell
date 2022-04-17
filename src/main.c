@@ -24,7 +24,6 @@ void	two_mark(t_info *inf)
 	int i;
 
 //	inf->line =
-
 	printf("|\"|\n");
 }
 
@@ -41,18 +40,16 @@ int	cheak_pipe(t_info *inf)
 		start_readline(inf);
 	return (0);
 }
-
+ 
 int main(int ac, char **argv, char **env)
 {
 	t_info	*inf;
 	char 	*str;
 	t_env	*tmp;
 
-
 	gl_exit = 0;
 	inf = init_info(env);
-	shell_level(inf);
-
+//	shell_level(inf);
 //	printf("__/__/__/__/__/__/__/__/__/__/__/\n");
 //	tmp = inf->env_lst;
 //	if (tmp != NULL)
@@ -64,22 +61,22 @@ int main(int ac, char **argv, char **env)
 //		}
 //		printf("%s\n", tmp->str);
 //	}
-//	while (1)
-//	{
-//		str = readline(">: ");
+	while (1)
+	{
+		str = readline("mimishell: ");
+//		if (ft_strlen(str) != 0)
+//			add_history(str);
+		parsing_s(inf, str, env);
+//		printf("%s\n", str);
 //		cheak_pipe(inf);
 //		if (ft_strlen(str) != 0)
 //			add_history(str);
 //		parsing_s(inf, str);
-//
-//
-//		if (ft_strnstr(inf->st_line, "exit", ft_strlen(inf->st_line)))
-//			exit(EXIT_SUCCESS);
-//		if (gl_exit == 1)
-//			break ;
-//	}
-
-
+		if (ft_strnstr(str, "exit", ft_strlen(str)))
+			exit(EXIT_SUCCESS);
+		if (gl_exit == 1)
+			break ;
+	}
 }
 //int _9main(int ac, char **argv, char **env)
 //{
