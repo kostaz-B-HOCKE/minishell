@@ -5,6 +5,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <errno.h>
+# include <fcntl.h>
 # include <string.h>
 # include <signal.h>
 # include <sys/types.h>
@@ -12,6 +13,13 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 #include "libft/libft.h"
+
+# define SHELL_NAME "minishell: "
+# define ERROR_NAME "minishell"
+# define NEW_TOKEN "syntax error near unexpected token `newline'"
+# define IN_TOKEN "syntax error near unexpected token `<'"
+# define OUT_TOKEN "syntax error near unexpected token `>'"
+# define PIPE_TOKEN "syntax error near unexpected token `|'"
 
 int	gl_exit;
 
@@ -54,7 +62,7 @@ void	two_mark(t_info *inf);
 char	*one_mark(t_info *inf, char *str, int *i);
 char	*ft_gap(char *str, int *i, char c);
 char	*ft_gap2(char *str, int *i, char c, char **env);
-char *ft_dollar(char *str, int *i, char **env);
+char	*ft_dollar_pv(char *str, int *i, char **env);
 char	*ft_slesh(char *str, int *i);
 
 //info.c
@@ -71,6 +79,7 @@ void	shell_level(t_info *inf);
 void	print_error(char *error, char *str);
 char	*ft_strjoin_free(char *s1, char *s2);
 
-
-
+//check_util.c
+int	check_token(char c);
+int	check_len(char *s);
 #endif

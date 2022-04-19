@@ -61,6 +61,7 @@ int main(int ac, char **argv, char **env)
 //		}
 //		printf("%s\n", tmp->str);
 //	}
+
 	while (1)
 	{
 		str = readline("mimishell: ");

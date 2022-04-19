@@ -1,17 +1,19 @@
 #include "../minishell.h"
 
-void	execute_test(void)
+char	*redirect_test(void)
 {
-	int tmpin = dup(0);
-	int tmpout = dup(1);
-	int fdin;
-
-
-
+	// >INF
+	open("111", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	// |>>|
+	open("222", O_WRONLY | O_CREAT | O_APPEND, 0644);	
+	// |<|
+	open("333", O_RDONLY, 0644);
+	return ("WOW\n");
 }
 
 int main()
 {
-	execute_test();
+
+	redirect_test(); 
 //	printf("MAKE\n");
 }
