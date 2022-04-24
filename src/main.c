@@ -1,5 +1,31 @@
 #include "../minishell.h"
 
+void	handler(int sig)
+{
+    (void)sig;
+    rl_on_new_line();
+    rl_redisplay();
+    write(1, "  \n", 3);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+    gl_exit = 1;
+}
+
+void	sig_handler(void)
+{
+    struct sigaction	sa;
+    sigset_t			set;
+
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    sa.sa_handler = handler;
+    sigemptyset(&set);
+    sigaddset(&set, SIGINT);
+    sa.sa_mask = set;
+    sigaction(SIGINT, &sa, NULL);
+}
+
 int	start_readline(t_info *inf)
 {
 	inf->split_line = ft_split(inf->st_line, ' ');
@@ -40,53 +66,36 @@ int	cheak_pipe(t_info *inf)
 		start_readline(inf);
 	return (0);
 }
- 
+
+void    start_shell(t_info *inf)
+{
+    char *str;
+
+    while (1)
+    {
+        sig_handler();//control + D выдает сегу
+        str = readline("mimishell: ");
+        if (!str)
+            break ;
+		if (ft_strlen(str) != 0)
+			add_history(str);
+        parsing_s(inf, str);
+    }
+}
+
 int main(int ac, char **argv, char **env)
 {
-	t_info	*inf;
-	char 	*str;
+    char 	*str;
+
+    t_info	*inf;
 	t_env	*tmp;
 
 	gl_exit = 0;
 	inf = init_info(env);
+//  print_me_env(inf);
 //	shell_level(inf);
 //	printf("__/__/__/__/__/__/__/__/__/__/__/\n");
-//	tmp = inf->env_lst;
-//	if (tmp != NULL)
-//	{
-//		while (tmp->next)
-//		{
-//			printf("%s\n",  tmp->str);
-//			tmp = tmp->next;
-//		}
-//		printf("%s\n", tmp->str);
-//	}
 
-	while (1)
-	{
-		str = readline("mimishell: ");
-//		if (ft_strlen(str) != 0)
-//			add_history(str);
-		parsing_s(inf, str, env);
-//		printf("%s\n", str);
-//		cheak_pipe(inf);
-//		if (ft_strlen(str) != 0)
-//			add_history(str);
-//		parsing_s(inf, str);
-		if (ft_strnstr(str, "exit", ft_strlen(str)))
-			exit(EXIT_SUCCESS);
-		if (gl_exit == 1)
-			break ;
-	}
+    start_shell(inf);
 }
-//int _9main(int ac, char **argv, char **env)
-//{
-//	char *cmd[2];
-//
-//	cmd[0] = "cat";
-//	cmd[1] = "-e";
-//	printf("%s\n", find_path("cat", env));
-//		execve(find_path("cat", env), cmd, env);
-//	return (1);
-//}
 

@@ -1,15 +1,10 @@
 #include "../minishell.h"
 
-char	*free_str_2(char *s1, char *s2)
+void	pass_space_two(char *input, int *i)
 {
-	free(s1);
-	free(s2);
-	return (NULL);
-}
-
-void	preparser(char *str, int *i, char c)
-{
-	// while (str[++i])
+    while (input[*i] && input[*i] != ' '
+           && input[*i] != '<' && input[*i] != '>' && input[*i] != '|')
+        (*i)++;
 }
 
 char	*delete_spese(char *str)
@@ -18,6 +13,8 @@ char	*delete_spese(char *str)
 	int		len;
 	char	*res;
 
+	if (!str)
+		return (str);
 	i = -1;
 	while (str[++i] == ' ')
 		;
@@ -54,7 +51,6 @@ char	*ft_blank(char *str, int *i)
 
 char	*init_redirect(char *str, int *i, int *n)
 {
-	printf("%s\n", ">>");
 	char *tmp;
 
 	*n = *(i)--;
@@ -66,67 +62,160 @@ char	*init_redirect(char *str, int *i, int *n)
 	return (tmp);
 }
 
-char	*ft_redirect_1(char *str, int *i, t_info *inf)
+char    *bild_file_check(char *file_name, t_info *inf)
 {
-	char	*start;
-	int		n;
+    int i;
 
-	start = init_redirect(str, i, &n);
-	printf("PP:%s\n", start);
-	if (check_len(i + n) || check_token(str[n]))
-		return ()
+    i = -1;
+    while (file_name[++i])
+    {
+        if (file_name[i] == '$')
+            ft_dollar_pv(file_name, &i, inf->env);
+        if (file_name[i] == '\'')
+            ft_gap(file_name, &i, '\'');
+        if (file_name[i] == '\"')
+            ft_gap2(file_name, &i, '\"', inf);
+        if (!(*file_name))
+            return (NULL);
+    }
+    return (file_name);
+}
 
-	return (str);
+int	open_redir_1(char *file, t_info *inf)
+{
+    int fd;
+    char *error;
+
+    file = bild_file_check(file, inf);
+    fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD | S_IRGRP | S_IROTH);
+    if (fd == -1)
+    {
+//        error = bild_file_check(file);
+//        perror(error);
+//        free_two_str(error, file);
+        gl_exit = 1;
+        return (1);
+    }
+    free(file);
+//    close(inf->fd_in)
+    close(inf->fd_in);
+    inf->fd_in = fd;
+    inf->is_redirect++;
+	return (0);
+}
+
+char    *ft_redirect_2(char *str, int *i, t_info *inf)
+{
+    char    *tmp;
+    int j = 0;
+
+//  is_herredo
+    return (str);
+}
+
+//char    *ft_heredok(char *str, int *i, t_info *inf)
+//{
+//    char    *start;
+//    char    *end;
+//    char    *line;
+//    int     n;
+//    int     j;
+//
+//    start = init_redirect(str, i, &n);
+//   if (check_len(str + n) || check_token(str[n]))
+//        return (free_str_2(start, str));
+//    j = n;
+//    pass_space_two(str, &n);
+//    end = ft_substr(str, n, ft_strlen(str));
+//    start[n++] = 0;
+//    line = ft_strdup(start + j);
+//    read_heredoc(line, inf);
+//    return (str);
+//}
+
+void    read_heredoc(char *str, t_info *inf)
+{
+    char *tmp;
+    char *tmp2;
+    char *tmp3;
+
+    tmp = str;
+    str = ft_strjoin(str, "\n");
+    free(tmp);
+    tmp = ft_strdup("");
+//    write(1, "> ", 2);
+//    printf("%s\n", tmp2);
+    tmp2 = get_next_line(0);
 }
 
 char	*ft_chek_redirect(char *str, int *i, t_info *inf)
 {
 	if (str[*i] == '>' && str[*i + 1] == '>')
-		ft_redirect_1(str, i, inf);
+        printf(">>!\n");
 	else if (str[*i] == '>')
-		printf(">\n");
+        str = ft_redirect_1(str, i, inf);
 	else if (str[*i] == '<' && str[*i + 1] == '<')
-		printf("<<\n");
+        printf("<<\n");
 	else if (str[*i] == '<')
 		printf("<\n");
 	return (str);
 }
 
-int	chek_symbol_str(t_info *inf, char *str, char **env)
+char    *chek_symbol_str(t_info *inf, char *str, int *i)
 {
-	int i;
+	char **env;
 
-	i = -1;
-	while (str[++i])
+	env = inf->env;
+	while (str[++(*i)])
 	{
-		if (str[i] == '\'')
-			str = ft_gap(str, &i, '\'');
-		if (str[i] == '\"')
-			str = ft_gap2(str, &i, '\"', env);
-		if (str[i] == '\\')
-			str = ft_slesh(str, &i);
-		if (str[i] == '$')
-			str = ft_dollar_pv(str, &i, env);
-		if (str[i] == '>' || str[i] == '<')
-			str = ft_chek_redirect(str, &i, inf);
-		if (str[i] == ' ' && str[i + 1] == ' ')
-			str = ft_blank(str, &i);
+		if (str[*i] == '\'')
+			str = ft_gap(str, i, '\'');
+//		if (str[*i] == '\"')
+//			str = ft_gap2(str, i, '\"', inf);
+//		if (str[*i] == '\\')
+//			str = ft_slesh(str, i);
+//		if (str[*i] == '$')
+//            str = ft_dollar_pv(str, i, env);
+//		if (str[*i] == '>' || str[*i] == '<')
+//			str = ft_chek_redirect(str, i, inf);
+//		if (str[*i] == ' ' && str[*i + 1] == ' ')
+//			str = ft_blank(str, i);
 	}
-	printf("++++++++++++++++++++++++++++++++++++++\n%s\n", str);
-	return (0);
+    if (ft_strlen(str) != 0)
+        link_to_str(str, inf);
+    put_link_to_pipe(inf);
+//	printf("++++++++++++++++++++++++++++++++++++++\n%s\n", str);
+	return (str);
 }
 
-int	parsing_s(t_info *inf, char *str, char **env)
+void    parsing_s(t_info *inf, char *str)
 {
-	str = delete_spese(str);
-	chek_symbol_str(inf, str, env);
-//	ft_split(inf->line, ' ');
-//	while (inf->)
-//	if (ft_strnstr(inf->st_line, "\'", ft_strlen(inf->st_line)))
-//		one_mark(inf);
-//	if (ft_strnstr(inf->st_line, "\"", ft_strlen(inf->st_line)))
-//		two_mark(inf);
-//	printf("|%s|\n", str);
-	return (0);
-}
+	t_pipels	*tmp;
+    int			i;
 
+    i = -1;
+    if (str[0] == 0)
+    {
+        free(str);
+        return ;
+    }
+	str = delete_spese(str);
+	str = chek_symbol_str(inf, str,	&i);
+	if (!str)
+	{
+		printf("NO STR\n");
+		inf->pipe_index = 0;
+		free_link(&inf->link);
+//		free_pipex
+		gl_exit = 258;
+		return ;
+	}
+    if (ft_strlen(str) == 0)
+        free(str);
+	tmp = inf->pipels;
+//    printf("CHEEK\n");
+    cmd_exe(inf);
+	inf->pipels = tmp;
+//    printf("arg[0] %s\n", inf->pipels->arg[0]);
+//	free_pipex
+}

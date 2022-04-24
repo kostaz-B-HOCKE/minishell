@@ -1,40 +1,43 @@
 #include "../minishell.h"
 
-static size_t	ft_max_size(void)
+char	*free_str_2(char *s1, char *s2)
 {
-	size_t	max_size;
-	size_t	bits;
-
-	max_size = 1;
-	bits = sizeof(size_t) * 8;
-	while (bits--)
-	{
-		max_size = max_size * 2;
-	}
-	return (max_size - 1);
+    free(s1);
+    free(s2);
+    return (NULL);
 }
 
-char	*ft_strjoin_free(char *s1, char *s2)
+char	*free_str_3(char *s1, char *s2, char *s3)
 {
-	size_t	max_size;
-	size_t	len;
-	size_t	len1;
-	size_t	len2;	
-	char	*s;
-
-	max_size = ft_max_size();
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	if ((len1 != max_size) && ((max_size - len1 - 1) >= len2))
-		len = len1 + len2;
-	else
-		return (NULL);
-	s = (char *)malloc(len + 1);
-	if (s == NULL)
-		return (NULL);
-	ft_memcpy((void *)s, (const void *)s1, len1);
-	ft_memcpy((void *)(s + len1), (const void *)s2, len2 + 1);
-	free(s2);
-	free(s1);
-	return (s);
+    free(s1);
+    free(s2);
+    free(s3);
+    return (NULL);
 }
+
+void	free_arr(char **arr)
+{
+    int	i;
+
+    if (arr)
+    {
+        i = 0;
+        while (arr[i])
+            free(arr[i++]);
+        free(arr);
+    }
+}
+
+//void	free_pipes(t_pipels **pipes)
+//{
+//    t_pipels    *tmp;
+//
+//    while (*pipes)
+//    {
+//        free_arr((*pipes)->arg);
+//        free((*pipes)->heredoc);
+//        tmp = *pipes;
+//        *pipes = (*pipes)->next;
+//        free(tmp);
+//    }
+//}

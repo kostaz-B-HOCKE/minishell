@@ -19,13 +19,10 @@ char	*ft_dollar(char *str, int *i, char *s2, int j)
 	if (!*s2)
 	{
 		*i = j - *i;
-		printf("!1!\n");
 		tmp3 = ft_strjoin_free(tmp, tmp2);
-		printf("!2!\n");
 	}
 	else
 	{
-		printf("!0!\n");
 		*i = *i - ft_strlen(s2) - 1;
 		tmp3 = ft_strjoin_free(tmp, s2);
 		tmp3 = ft_strjoin_free(tmp3, tmp2);
@@ -64,15 +61,14 @@ char	*ft_dollar_pv(char *str, int *i, char **env)
 				free(tmp2);
 		}
 	}
-	printf("flag %d\n", flag);
 	free(tmp);
-	// free(tmp2);
 	if (flag == 1)
 	{
 		tmp2 = ft_substr(env[k], z + 1, ft_strlen(env[k]) - z);
 	}
 	else
 		tmp2 = ft_strdup("\0");
+    printf("!\n");
 	return (ft_dollar(str, i, tmp2, j));
 }
 

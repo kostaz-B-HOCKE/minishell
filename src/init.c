@@ -33,10 +33,9 @@ t_env	*start_list_env(t_info *inf)
 int	env_move(t_info *inf)
 {
 	if (!inf->env_lst)
-	{
 		inf->env_lst = start_list_env(inf);
-	}
-	return (0);
+//    else
+	    return (0);
 }
 
 t_info	*init_info(char **env)
@@ -46,6 +45,8 @@ t_info	*init_info(char **env)
 	inf = malloc(sizeof(t_info));
 	if (!inf)
 		return (NULL);
+    inf->fd_in = -1;
+    inf->fd_out = -1;
 	inf->env_lst = NULL;
 	inf->env = env;
 	inf->shlvl = NULL;
@@ -53,6 +54,53 @@ t_info	*init_info(char **env)
 	inf->line = NULL;
 	inf->st_line = NULL;
 	inf->split_pipex = NULL;
+    inf->is_redirect = 0;
+    inf->pipe_index = 0;
+    inf->is_pipe = 0;
 	env_move(inf);
+
 	return (inf);
+}
+
+void    print_me_env(t_info *inf)
+{
+    t_env *tmp;
+
+	tmp = inf->env_lst;
+	if (tmp != NULL)
+	{
+		while (tmp->next)
+		{
+			printf("%s\n",  tmp->str);
+			tmp = tmp->next;
+		}
+		printf("%s\n", tmp->str);
+	}
+}
+
+void    print_me_link(t_info *inf)
+{
+    t_link *tmp;
+
+    tmp = inf->link;
+    if (tmp != NULL)
+    {
+        while (tmp->next)
+        {
+            printf("link:%s\n",  tmp->str);
+            tmp = tmp->next;
+        }
+        printf("link:%s\n", tmp->str);
+    }
+    else
+        printf("no list link\n");
+}
+
+void    re_init_by_inf(t_info *inf)
+{
+    inf->fd_in = -1;
+    inf->fd_out = -1;
+//    inf->
+
+
 }

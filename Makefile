@@ -5,7 +5,10 @@ SRB_DIR		= src/
 # SRB		= $(addprefix $(SRB_DIR), main1.c)
 SRB		= $(addprefix $(SRB_DIR), main.c execve_unil.c pipex.c init.c \
 					adoption_cmd.c par.c shell_level.c utilus.c ft_dollar.c ft_qap.c \
-					utilus_free.c check_util.c)
+					utilus_free.c check_util.c redirect_1.c reading_get_line.c \
+					list_command_util.c	list_command.c  parsin.c  pipe_list_utilus.c      \
+						exe_command.c   							\
+								)
 
 #SRB		= $(addprefix $(SRB_DIR), main.c)
 
@@ -15,8 +18,6 @@ LIB			= libft/libft.a
 
 #CFLAGS		= -Wall -Wextra -Werror
 CFLAGS		=
-
-
 RED			=	"\033[1;31m"
 BLUE		=	"\033[1;34m"
 YELLOW		=	"\033[1;33m"

@@ -7,3 +7,34 @@ void	print_error(char *error, char *str)
 	ft_putendl_fd(error, 2);
 	gl_exit = 1;
 }
+
+char	*ft_strjoin_free(char *s1, char *s2)
+{
+    size_t	i;
+    size_t	n;
+    char	*str;
+    size_t	len;
+
+    i = 0;
+    n = 0;
+    if (!s1 || !s2)
+        return (NULL);
+    len = ft_strlen(s1) + ft_strlen(s2);
+    str = malloc(sizeof(char) * len + 1);
+    if (!str)
+        return (NULL);
+    while (s1[i])
+    {
+        str[i] = s1[i];
+        i++;
+    }
+    while (s2[n])
+    {
+        str[i + n] = s2[n];
+        n++;
+    }
+    str[i + n] = '\0';
+    free(s1);
+    free(s2);
+    return (str);
+}
