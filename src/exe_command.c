@@ -109,15 +109,67 @@ char    **re_bild_argv(char **arg, t_info *inf)
     return (res);
 }
 
+char    **bild_env(t_env *env_list)
+{
+    char    **env;
+    t_env   *tmp;
+    int     size;
+
+    size = 0;
+    tmp = env_list;
+    while (tmp->next)
+    {
+        size++;
+        tmp = tmp->next;
+    }
+    env = (char **) malloc(sizeof(char *) * size);
+    if (!env)
+        exit(1);
+    size = 0;
+    tmp = env_list;
+    while (tmp->next)
+    {
+        env[size++] = tmp->str;
+        tmp = tmp->next;
+    }
+//    size = 0;
+//    while (env[size])
+//        printf("%s\n", env[size++]);
+    return (env);
+}
+
 void    child(char *cmd, t_info *inf, int ft_in, int fd_out)
 {
     char **argv;
 
     argv = re_bild_argv(inf->pipels->arg, inf);
-    
+//    if (inf->pipels->is_heredoc)
+//    if (inf->is_pipe);
+//    printf("argv[0]:%s\n", argv[0]);
 
-//    free_arr(argv);
+//    bild_env(inf->env_lst);
+    execve(argv[0], argv, bild_env(inf->env_lst));
+//    execute(argv[0], argv, inf->env);
+    free_arr(argv);
     exit(127);
+}
+
+void    parent(pid_t pid, t_info *inf, int pipe_in, int pipe_out)
+{
+    int return_exit;
+
+    if (inf->is_pipe)
+    {
+        close(pipe_out);
+        dup2(pipe_in, inf->tmp_in);
+    }
+    waitpid(pid, &return_exit, 0);
+    gl_exit = WEXITSTATUS(return_exit);
+    close(inf->pipels->fd_in);
+    close(inf->pipels->fd_out);
+    close(inf->pipels->fr_re_out);
+    close(pipe_in);
+    close(pipe_out);
 }
 
 void    exe_fork(char *cmd, t_info *inf)
@@ -132,8 +184,8 @@ void    exe_fork(char *cmd, t_info *inf)
     }
     else if (pid == 0)
         child(cmd, inf, inf->pipels->fd_in, inf->pipels->fd_out);
-//  else
-//        parent(pid, inf, inf->pipels->fd_in, inf->pipels->fd_out);
+    else
+        parent(pid, inf, inf->pipels->fd_in, inf->pipels->fd_out);
 }
 
 int cheak_pipe_redirects(t_pipels *pipels)
@@ -165,6 +217,8 @@ void    exe_void(t_info *inf)
     close(inf->pipels->fd_in);
     close(inf->pipels->fd_out);
     close(inf->pipels->fr_re_out);
+    close(inf->pipe_fd_in);
+    close(inf->pipe_fd_out);
     cmd = find_command(inf->pipels->arg);
     if (!cmd)
         cmd = ft_strdup("");
@@ -172,7 +226,9 @@ void    exe_void(t_info *inf)
         if (!ft_strchr(cmd, '/'))
             cmd = find_command_in_env(cmd, inf);
     arg[0] = cmd;
-
+    arg[1] = "";
+    arg[2] = NULL;
+    execute_fork_old(cmd, arg, inf);
 }
 
 //все оставшиеся команды
@@ -182,17 +238,20 @@ void    exe_command(t_info *inf)
 
     if (cheak_pipe_redirects(inf->pipels))
     {
+        printf("RR\n");
         exe_void(inf);
     }
-    else
-    cmd = find_command(inf->pipels->arg);
-    if (!cmd)
-    {
-        close(inf->pipels->fd_in);
-        close(inf->pipels->fd_out);
-        close(inf->pipels->fr_re_out);
-        return ;
+    else {
+        printf("RE\n");
+        cmd = find_command(inf->pipels->arg);
+        if (!cmd) {
+            close(inf->pipels->fd_in);
+            close(inf->pipels->fd_out);
+            close(inf->pipels->fr_re_out);
+            return;
+        }
+        exe_fork(cmd, inf);
+        free(cmd);
     }
-    exe_fork(cmd, inf);
-    free(cmd);
 }
+

@@ -28,16 +28,16 @@ void	free_arr(char **arr)
     }
 }
 
-//void	free_pipes(t_pipels **pipes)
-//{
-//    t_pipels    *tmp;
-//
-//    while (*pipes)
-//    {
-//        free_arr((*pipes)->arg);
-//        free((*pipes)->heredoc);
-//        tmp = *pipes;
-//        *pipes = (*pipes)->next;
-//        free(tmp);
-//    }
-//}
+void	free_pipels(t_pipels **pipes)
+{
+    t_pipels    *tmp;
+
+    while (*pipes)
+    {
+        free_arr((*pipes)->arg);
+        free((*pipes)->heredoc);
+        tmp = *pipes;
+        *pipes = (*pipes)->next;
+        free(tmp);
+    }
+}

@@ -52,9 +52,9 @@ typedef struct  s_pipels
     int         fr_re_out;
     char        **arg;
     int         index;
+    int			is_heredoc;
     int         is_redirect;
     int         is_dollar;
-    int			is_heredoc;
     char        *heredoc;
 //    int         fd_
 //    int         is_heredoc;
@@ -69,13 +69,16 @@ typedef struct	s_info
 	char	**split_pipex;
 	char 	**env;
 
+    int	    is_heredoc;
     int     pipe_index;
     int     is_pipe;
     int     fd_in;
     int     fd_out;
+    int     fd_re_out;
     int     is_redirect;
     int     pipe_fd_in;
     int     pipe_fd_out;
+    int     is_dollar;
     int		tmp_in;
 
 	char	*shlvl;
@@ -93,6 +96,7 @@ t_info	*init_info(char **env);
 void    re_init_by_inf(t_info *inf);
 void    print_me_env(t_info *inf);
 void    print_me_link(t_info *inf);
+void    print_list_pipels(t_info *inf);
 
 void	cheak_cmd(t_info *inf);
 int		adopt_cmd(t_info *inf);
@@ -115,11 +119,18 @@ char	*get_next_line(int fd);// mood pet3
 void    put_link_to_pipe(t_info *inf);
 
 
+
+
 //info.c
 t_info	*init_info(char **env);
 int	lst_add_back(t_info *inf, t_env *env_new);
 t_env	*lst_new_env(char *str);
 int	env_move(t_info *inf);
+//===========
+t_info	*init_info(char **env);
+void    re_init_by_inf(t_info *inf);
+void    print_me_env(t_info *inf);
+void    print_me_link(t_info *inf);
 
 //shell_level.c
 void	shell_level(t_info *inf);
@@ -132,10 +143,11 @@ char	*ft_strjoin_free(char *s1, char *s2);
 int     check_token(char c);
 int     check_len(char *s);
 
-//free
+//utilus_free.c
 char	*free_str_2(char *s1, char *s2);
 char	*free_str_3(char *s1, char *s2, char *s3);
 void	free_arr(char **arr);
+void	free_pipels(t_pipels **pipes);
 
 //list_command_util.c
 t_link  *list_new_mini(char *str);
@@ -150,6 +162,13 @@ int	pipes_size(t_pipels *pipes);
 void    exe_command(t_info *inf);
 void    cmd_exe(t_info *inf);
 
-
 void    link_to_str(char *str, t_info *inf);
+
+//error_util.c
+void	micro_print_err(char *cmd);
+
+//
+void	execute_fork_old(char *cmd, char *arg[], t_info *inf);
+
+
 #endif

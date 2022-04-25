@@ -161,29 +161,56 @@ char	*ft_chek_redirect(char *str, int *i, t_info *inf)
 	return (str);
 }
 
+char	*parse_spaces(char *input, int *index, t_info *inf)
+{
+    char	*start;
+    char	*end;
+    int		i;
+
+    i = *index;
+    start = ft_strdup(input);
+    start[i++] = 0;
+    link_to_str(start, inf);
+    while (input[i] == ' ')
+        (i)++;
+    end = ft_substr(input, i, ft_strlen(input));
+    free(input);
+    *index = -1;
+    return (end);
+}
+
 char    *chek_symbol_str(t_info *inf, char *str, int *i)
 {
 	char **env;
 
 	env = inf->env;
+//        printf("str:%s\n", str);
 	while (str[++(*i)])
 	{
-		if (str[*i] == '\'')
-			str = ft_gap(str, i, '\'');
-//		if (str[*i] == '\"')
+//		if (str[*i] == '\'')
+//			str = ft_gap(str, i, '\'');
+//		else if (str[*i] == '\"')
 //			str = ft_gap2(str, i, '\"', inf);
-//		if (str[*i] == '\\')
+//		else if (str[*i] == '\\')
 //			str = ft_slesh(str, i);
-//		if (str[*i] == '$')
+//		else if (str[*i] == '$'
+//                 && (ft_isalnum(str[*i + 1]) || str[*i + 1] == '?'))
 //            str = ft_dollar_pv(str, i, env);
-//		if (str[*i] == '>' || str[*i] == '<')
+//		else if (str[*i] == '>' || str[*i] == '<')
 //			str = ft_chek_redirect(str, i, inf);
-//		if (str[*i] == ' ' && str[*i + 1] == ' ')
-//			str = ft_blank(str, i);
+		if (str[*i] == ' ')
+			str = parse_spaces(str, i, inf);
+        if (!str)
+            return (NULL);
 	}
     if (ft_strlen(str) != 0)
         link_to_str(str, inf);
+
+//    print_me_link(inf);
     put_link_to_pipe(inf);
+
+//    print_list_pipels(inf);
+//  print_me_link(inf);
 //	printf("++++++++++++++++++++++++++++++++++++++\n%s\n", str);
 	return (str);
 }
@@ -203,19 +230,17 @@ void    parsing_s(t_info *inf, char *str)
 	str = chek_symbol_str(inf, str,	&i);
 	if (!str)
 	{
-		printf("NO STR\n");
 		inf->pipe_index = 0;
 		free_link(&inf->link);
-//		free_pipex
+        free_pipels(&inf->pipels);
 		gl_exit = 258;
 		return ;
 	}
     if (ft_strlen(str) == 0)
         free(str);
 	tmp = inf->pipels;
-//    printf("CHEEK\n");
     cmd_exe(inf);
 	inf->pipels = tmp;
-//    printf("arg[0] %s\n", inf->pipels->arg[0]);
-//	free_pipex
+    free_pipels(&inf->pipels);
 }
+

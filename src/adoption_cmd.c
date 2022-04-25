@@ -24,11 +24,11 @@ void    cmd_exe(t_info *inf)
     size = pipes_size(inf->pipels);
     if (size == 1)
     {
-//        printf("no pipe\n");
         cheak_cmd(inf);
     }
     else
     {
+        printf("SEE PIPE\n");
         if (pipe(p_fd) < 0)
         {
             perror(ERROR_NAME);
@@ -52,7 +52,11 @@ void	cheak_cmd(t_info *inf)
 //    printf("arg[0] %s\n", inf->pipels->arg[0]);
 //    if (!inf->pipels->arg[0])
 //        return ;
-//    int_inf_fd(inf);
+    if (!inf->pipels->arg[0]){
+        printf("OX NO\n");
+        return;
+    }
+    int_inf_fd(inf);
 //    printf("arg[0] %s\n", inf->pipels->arg[0]);
 //    if (ft_strcmp(inf->pipels->arg[0], "env") == 0)
 //        command_env(inf);
@@ -72,6 +76,8 @@ void	cheak_cmd(t_info *inf)
         exe_command(inf);
 //    close(inf->pipe_fd_in);
 //    close(inf->pipe_fd_out);
+    close(inf->pipe_fd_in);
+    close(inf->pipe_fd_out);
 }
 
 //int adopt_cmd_pipe(t_info *inf)

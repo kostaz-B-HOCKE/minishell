@@ -27,14 +27,14 @@ t_pipels *new_list_pipe(char **arg, t_info *inf)
     if (!new)
         return (NULL);
     new->index = inf->pipe_index;
+    new->arg = arg;
     new->next = NULL;
-    new->arg = arg;
-//    if (inf->heredoc)
-//        new->heredoc = ft
-//    new->
-    new->fd_out = -1;
-    new->fd_in = -1;
-    new->arg = arg;
+    new->is_redirect = inf->is_redirect;
+    new->fd_in = inf->fd_in;
+    new->fd_out = inf->fd_out;
+    new->fr_re_out = inf->fd_re_out;
+    new->is_heredoc = inf->is_heredoc;
+    new->is_dollar = inf->is_dollar;
     return (new);
 }
 
@@ -60,8 +60,9 @@ void    put_link_to_pipe(t_info *inf)
     size = link_size(inf->link);
     tmp = inf->link;
     arg = put_link_to_arg(size, inf);
-    if (!inf->pipels)
+    if (!inf->pipels) {
         inf->pipels = new_list_pipe(arg, inf);
+    }
     else
     {
         pipes_add_back(&(inf->pipels), new_list_pipe(arg, inf));

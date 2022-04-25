@@ -43,22 +43,29 @@ t_info	*init_info(char **env)
 	t_info	*inf;
 
 	inf = malloc(sizeof(t_info));
-	if (!inf)
-		return (NULL);
-    inf->fd_in = -1;
-    inf->fd_out = -1;
-	inf->env_lst = NULL;
-	inf->env = env;
-	inf->shlvl = NULL;
-	inf->split_line = NULL;
-	inf->line = NULL;
-	inf->st_line = NULL;
-	inf->split_pipex = NULL;
-    inf->is_redirect = 0;
-    inf->pipe_index = 0;
+	if (!inf) {
+        return (NULL);
+    }
     inf->is_pipe = 0;
+    inf->env = env;
+    inf->env_lst = NULL;
+    inf->shlvl = NULL;
+    inf->split_line = NULL;
+    inf->split_pipex = NULL;
+    inf->st_line = NULL;
+    inf->pipels = NULL;
+    inf->line = NULL;
+    inf->fd_out = -1;
+    inf->fd_in = -1;
+    inf->fd_re_out = -1;
+    inf->tmp_in = -1;
+    inf->pipe_fd_in = -1;
+    inf->pipe_fd_out = -1;
+    inf->is_redirect = 0;
+    inf->is_heredoc = 0;
+    inf->is_dollar = 0;
+    inf->pipe_index = 0;
 	env_move(inf);
-
 	return (inf);
 }
 
@@ -94,6 +101,32 @@ void    print_me_link(t_info *inf)
     }
     else
         printf("no list link\n");
+}
+
+void    print_list_pipels(t_info *inf)
+{
+    t_pipels *tmp;
+    int i;
+
+    tmp = inf->pipels;
+    if (tmp != NULL)
+    {
+        while (tmp->next)
+        {
+            printf("NO NULL\n");
+            i = -1;
+            while (tmp->arg[++i])
+                printf("i%d:%s ", i, tmp->arg[i]);
+            printf("\n");
+            tmp = tmp->next;
+        }
+        i = -1;
+        while (tmp->arg[++i])
+            printf("i%d:%s ", i, tmp->arg[i]);
+        printf("\n");
+    }
+    else
+        printf("no list pipels\n");
 }
 
 void    re_init_by_inf(t_info *inf)

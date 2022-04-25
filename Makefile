@@ -7,7 +7,7 @@ SRB		= $(addprefix $(SRB_DIR), main.c execve_unil.c pipex.c init.c \
 					adoption_cmd.c par.c shell_level.c utilus.c ft_dollar.c ft_qap.c \
 					utilus_free.c check_util.c redirect_1.c reading_get_line.c \
 					list_command_util.c	list_command.c  parsin.c  pipe_list_utilus.c      \
-						exe_command.c   							\
+						exe_command.c error_util.c execute_ft_pipe.c   							\
 								)
 
 #SRB		= $(addprefix $(SRB_DIR), main.c)

@@ -92,6 +92,7 @@ int main(int ac, char **argv, char **env)
 
 	gl_exit = 0;
 	inf = init_info(env);
+
 //  print_me_env(inf);
 //	shell_level(inf);
 //	printf("__/__/__/__/__/__/__/__/__/__/__/\n");
