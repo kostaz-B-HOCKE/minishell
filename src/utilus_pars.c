@@ -11,8 +11,8 @@ char    *bild_file_check(char *file_name, t_info *inf)
             ft_dollar_pv(file_name, &i, inf->env);
         if (file_name[i] == '\'')
             ft_gap(file_name, &i, '\'');
-        if (file_name[i] == '\"')
-            ft_gap2(file_name, &i, '\"', inf->env);
+//        if (file_name[i] == '\"')
+//            ft_gap2(file_name, &i, '\"', inf->env_lst);
         if (!(*file_name))
             return (NULL);
     }

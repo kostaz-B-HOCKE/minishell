@@ -76,6 +76,9 @@ char    **init_res(char **res, char **arg, t_info *inf)
 {
     int i;
     int size;
+
+    i = 0;
+    size = 0;
     while (arg[i])
     {
         if (ft_strlen(arg[i]) != 0)
@@ -109,32 +112,63 @@ char    **re_bild_argv(char **arg, t_info *inf)
     return (res);
 }
 
-char    **bild_env(t_env *env_list)
+//char    **bild_env(t_env *env_list)
+//{
+//    char    **env;
+//    t_env   *tmp;
+//    int     size;
+//
+//    size = 0;
+//    tmp = env_list;
+//    while (tmp->next)
+//    {
+//        size++;
+//        tmp = tmp->next;
+//    }
+//    env = (char **) malloc(sizeof(char *) * size);
+//    if (!env)
+//        exit(1);
+//    size = 0;
+//    tmp = env_list;
+//    while (tmp->next)
+//    {
+//        env[size++] = tmp->str;
+//        tmp = tmp->next;
+//    }
+////    size = 0;
+////    while (env[size])
+////        printf("%s\n", env[size++]);
+//    return (env);
+//}
+
+void    init_fds(int fd_in, int fd_out, int fd_re_out)
+{
+    if (fd_in != -1)
+        dup2(fd_in, STDIN_FILENO);
+    if (fd_re_out != -1)
+        dup2(fd_re_out, STDOUT_FILENO);
+    if (fd_out != -1)
+        dup2(fd_out, STDOUT_FILENO);
+}
+
+char    **build_env(t_env *env_ls)
 {
     char    **env;
-    t_env   *tmp;
-    int     size;
+    int     count;
 
-    size = 0;
-    tmp = env_list;
-    while (tmp->next)
-    {
-        size++;
-        tmp = tmp->next;
-    }
-    env = (char **) malloc(sizeof(char *) * size);
+    count = 0;
+    env = malloc(sizeof(char *) * (ft_envsize(env_ls) + 1));
     if (!env)
-        exit(1);
-    size = 0;
-    tmp = env_list;
-    while (tmp->next)
     {
-        env[size++] = tmp->str;
-        tmp = tmp->next;
+        print_error("sort_env", "malloc");
+        exit(1);
     }
-//    size = 0;
-//    while (env[size])
-//        printf("%s\n", env[size++]);
+    while (env_ls)
+    {
+        env[count++] = env_ls->str;
+        env_ls = env_ls->next;
+    }
+    env[count] = NULL;
     return (env);
 }
 
@@ -145,11 +179,9 @@ void    child(char *cmd, t_info *inf, int ft_in, int fd_out)
     argv = re_bild_argv(inf->pipels->arg, inf);
 //    if (inf->pipels->is_heredoc)
 //    if (inf->is_pipe);
-//    printf("argv[0]:%s\n", argv[0]);
-
-//    bild_env(inf->env_lst);
-    execve(argv[0], argv, bild_env(inf->env_lst));
-//    execute(argv[0], argv, inf->env);
+    init_fds(inf->pipels->fd_in, inf->pipels->fd_out, inf->pipels->fr_re_out);
+    execve(argv[0], argv, build_env(inf->env_lst));
+    micro_print_err(cmd);
     free_arr(argv);
     exit(127);
 }
@@ -182,10 +214,12 @@ void    exe_fork(char *cmd, t_info *inf)
         perror(ERROR_NAME);
         exit(EXIT_FAILURE);
     }
-    else if (pid == 0)
+    else if (pid == 0) {
         child(cmd, inf, inf->pipels->fd_in, inf->pipels->fd_out);
-    else
+    }
+    else {
         parent(pid, inf, inf->pipels->fd_in, inf->pipels->fd_out);
+    }
 }
 
 int cheak_pipe_redirects(t_pipels *pipels)
@@ -238,11 +272,9 @@ void    exe_command(t_info *inf)
 
     if (cheak_pipe_redirects(inf->pipels))
     {
-        printf("RR\n");
         exe_void(inf);
     }
     else {
-        printf("RE\n");
         cmd = find_command(inf->pipels->arg);
         if (!cmd) {
             close(inf->pipels->fd_in);
@@ -254,4 +286,3 @@ void    exe_command(t_info *inf)
         free(cmd);
     }
 }
-

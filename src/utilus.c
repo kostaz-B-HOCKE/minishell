@@ -38,3 +38,10 @@ char	*ft_strjoin_free(char *s1, char *s2)
     free(s2);
     return (str);
 }
+
+void    close_fds(int t1, int t2, int t3)
+{
+    close(t1);
+    close(t2);
+    close(t3);
+}

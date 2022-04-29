@@ -19,7 +19,7 @@ void	micro_print_err(char *cmd)
     err = build_error_str(cmd);
     write(2, err, ft_strlen(err));
     write(2, ": ", 2);
-    write(2, COMMAND_TOKEN, ft_strlen(COMMAND_TOKEN));
+    write(2, "command not found", ft_strlen("command not found"));
     write(2, "\n", 1);
     free(cmd);
     free(err);

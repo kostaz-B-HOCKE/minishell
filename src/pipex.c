@@ -89,3 +89,49 @@ int	ft_pipex(t_info *inf)
 //	execute(inf->split_pipex[i], inf);
 	return (0);
 }
+
+//char    *ft_pipex_cutting(char *str, int *i, t_info *inf)
+//{
+//
+//
+//
+//
+//    return (str);
+//}
+
+//не работает
+char	*ft_pipex_cutting(char *str, int *i, t_info *inf)
+{
+    char	*tmp;
+    char	*end;
+    int		j;
+
+    j = *i;
+    tmp = ft_substr(str, 0, j);
+    printf("1:%s\n", tmp);
+    tmp = ft_strdup(str);
+    printf("2:%s\n", tmp);
+    tmp[j++] = 0;
+    printf("2:%s\n", tmp);
+
+
+    if (ft_strlen(tmp) != 0) //зачем
+        link_to_str(tmp, inf);
+    else
+        free(tmp);
+    printf("ok2\n");
+    print_me_link(inf);
+//    if (check_pipe_token(input, inf))
+//        return (NULL);
+    put_link_to_pipe(inf);
+//    pass_space_one(input, &j);
+//    if (check_p_token(input, j))
+//        return (NULL);
+    end = ft_substr(str, j, ft_strlen(str));
+    printf("%s\n", end);
+//    if (check_unclosed_pipe(input, end))
+//        return (NULL);
+    *i = -1;
+    free(str);
+    return (end);
+}

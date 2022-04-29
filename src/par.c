@@ -69,12 +69,12 @@ char    *bild_file_check(char *file_name, t_info *inf)
     i = -1;
     while (file_name[++i])
     {
-        if (file_name[i] == '$')
-            ft_dollar_pv(file_name, &i, inf->env);
         if (file_name[i] == '\'')
             ft_gap(file_name, &i, '\'');
         if (file_name[i] == '\"')
             ft_gap2(file_name, &i, '\"', inf);
+        if (file_name[i] == '$')
+            ft_dollar_pv(file_name, &i, inf->env);
         if (!(*file_name))
             return (NULL);
     }
@@ -187,26 +187,23 @@ char    *chek_symbol_str(t_info *inf, char *str, int *i)
 //        printf("str:%s\n", str);
 	while (str[++(*i)])
 	{
-//		if (str[*i] == '\'')
-//			str = ft_gap(str, i, '\'');
-//		else if (str[*i] == '\"')
-//			str = ft_gap2(str, i, '\"', inf);
-//		else if (str[*i] == '\\')
-//			str = ft_slesh(str, i);
-//		else if (str[*i] == '$'
-//                 && (ft_isalnum(str[*i + 1]) || str[*i + 1] == '?'))
-//            str = ft_dollar_pv(str, i, env);
+		if (str[*i] == '\'')
+            str = ft_gap(str, i, '\'');
+		else if (str[*i] && str[*i] == '\"')
+			str = ft_gap2(str, i, '\"', inf);
+		else if (str[*i] == '$' && (ft_isalnum(str[*i + 1]) || str[*i + 1] == '?'))
+            str = ft_dollar_pv(str, i, env);
+//        else if (str[*i] == '|')
+//            ft_pipex_cutting(str, &i, inf);
 //		else if (str[*i] == '>' || str[*i] == '<')
 //			str = ft_chek_redirect(str, i, inf);
-		if (str[*i] == ' ')
+		else if (str[*i] && str[*i] == ' ')
 			str = parse_spaces(str, i, inf);
         if (!str)
             return (NULL);
 	}
     if (ft_strlen(str) != 0)
         link_to_str(str, inf);
-
-//    print_me_link(inf);
     put_link_to_pipe(inf);
 
 //    print_list_pipels(inf);

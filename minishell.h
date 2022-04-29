@@ -19,14 +19,16 @@
 # define TWO_TOKEN "Error! Unclosed dquote"
 # define THREE_TOKEN "Error! Unclosed pipe"
 # define SYNTAX_TOKEN "syntax error"
-# define COMMAND_TOKEN "command not found"
 # define IN_TOKEN "syntax error near unexpected token `<'"
 # define OUT_TOKEN "syntax error near unexpected token `>'"
 # define PIPE_TOKEN "syntax error near unexpected token `|'"
 # define NEW_TOKEN "syntax error near unexpected token `newline'"
 # define BUFFER_SIZE 1024
 # define D "/"
-# define TTT t_link
+#define RESET   "\033[0m"
+#define RED     "\033[1;31m"
+#define YELLOW  "\033[1;33m"
+#define WHITE   "\033[1;37m"
 
 int	gl_exit;
 
@@ -91,6 +93,8 @@ typedef struct	s_info
 void	execute(char *argv, t_info *inf);
 char	*find_path(char *cmd, t_info *inf);
 int		ft_pipex(t_info *inf);
+//char    *ft_pipex_cutting(char *str, int *i, t_info *inf);
+char	*ft_pipex_cutting(char *input, int *index, t_info *inf);
 
 t_info	*init_info(char **env);
 void    re_init_by_inf(t_info *inf);
@@ -117,8 +121,6 @@ char    *bild_file_check(char *file_name, t_info *inf);
 char	*ft_redirect_1(char *str, int *i, t_info *inf);
 char	*get_next_line(int fd);// mood pet3
 void    put_link_to_pipe(t_info *inf);
-
-
 
 
 //info.c
@@ -167,8 +169,20 @@ void    link_to_str(char *str, t_info *inf);
 //error_util.c
 void	micro_print_err(char *cmd);
 
+//ft_pwd
+void	ftt_pwd(t_info *inf);
+void	ftt_exit(char **code, t_info *inf);
+
+//ftt_echo.c
+void    ftt_echo(t_info *inf);
+
 //
 void	execute_fork_old(char *cmd, char *arg[], t_info *inf);
+int	ft_envsize(t_env *lst);
+int	ft_strcmp(const char *s1, const char *s2);
+void    close_fds(int t1, int t2, int t3);
 
+//ftt_cd.c
+void    ftt_cd(t_info *inf);
 
 #endif

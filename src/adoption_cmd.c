@@ -28,7 +28,7 @@ void    cmd_exe(t_info *inf)
     }
     else
     {
-        printf("SEE PIPE\n");
+//        printf("SEE PIPE\n");
         if (pipe(p_fd) < 0)
         {
             perror(ERROR_NAME);
@@ -49,31 +49,43 @@ void    cmd_exe(t_info *inf)
 
 void	cheak_cmd(t_info *inf)
 {
-//    printf("arg[0] %s\n", inf->pipels->arg[0]);
+//    printf("arg[0]:%s\n", inf->pipels->arg[0]);
 //    if (!inf->pipels->arg[0])
 //        return ;
+//    printf("cheak_cmd\n");
+//    write(1, "1cheak_cmd\n", ft_strlen("cheak_cmd\n"));
+//    write(2, "2cheak_cmd\\n", ft_strlen("cheak_cmd\\n"));
+//    write(3, "3cheak_cmd\\n", ft_strlen("cheak_cmd\\n"));
     if (!inf->pipels->arg[0]){
         printf("OX NO\n");
         return;
     }
     int_inf_fd(inf);
-//    printf("arg[0] %s\n", inf->pipels->arg[0]);
-//    if (ft_strcmp(inf->pipels->arg[0], "env") == 0)
+    if (ft_strcmp(inf->pipels->arg[0], "env") == 0)
+        print_me_env(inf);
 //        command_env(inf);
-//    else if (ft_strcmp(inf->pipes->arg[0], "pwd") == 0)
-//        command_pwd(inf);
-//    else if (ft_strcmp(inf->pipes->arg[0], "echo") == 0)
-//        command_echo(inf->pipes, inf);
-//    else if (ft_strcmp(inf->pipes->arg[0], "cd") == 0)
+    else if (ft_strcmp(inf->pipels->arg[0], "pwd") == 0) {
+        printf("типо работает pwd\n");
+        ftt_pwd(inf);
+    }
+    else if (ft_strcmp(inf->pipels->arg[0], "echo") == 0)
+    {
+        ftt_echo(inf);
+    }
+    else if (!ft_strcmp(inf->pipels->arg[0], "exit"))
+        ftt_exit(inf->pipels->arg, inf);
+    else if (ft_strcmp(inf->pipels->arg[0], "cd") == 0) {
+        ftt_cd(inf);
+    }
 //        command_cd(inf);
-//    else if (ft_strcmp(inf->pipes->arg[0], "exit") == 0)
-//        command_exit(inf->pipes->arg, inf);
 //    else if (ft_strcmp(inf->pipes->arg[0], "export") == 0)
 //        command_export(inf);
 //    else if (ft_strcmp(inf->pipes->arg[0], "unset") == 0)
 //        command_unset(inf);
-//    else
+    else {
+        printf("??else??\n");
         exe_command(inf);
+    }
 //    close(inf->pipe_fd_in);
 //    close(inf->pipe_fd_out);
     close(inf->pipe_fd_in);
