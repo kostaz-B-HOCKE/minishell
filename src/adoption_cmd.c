@@ -49,13 +49,6 @@ void    cmd_exe(t_info *inf)
 
 void	cheak_cmd(t_info *inf)
 {
-//    printf("arg[0]:%s\n", inf->pipels->arg[0]);
-//    if (!inf->pipels->arg[0])
-//        return ;
-//    printf("cheak_cmd\n");
-//    write(1, "1cheak_cmd\n", ft_strlen("cheak_cmd\n"));
-//    write(2, "2cheak_cmd\\n", ft_strlen("cheak_cmd\\n"));
-//    write(3, "3cheak_cmd\\n", ft_strlen("cheak_cmd\\n"));
     if (!inf->pipels->arg[0]){
         printf("OX NO\n");
         return;
@@ -65,7 +58,7 @@ void	cheak_cmd(t_info *inf)
         print_me_env(inf);
 //        command_env(inf);
     else if (ft_strcmp(inf->pipels->arg[0], "pwd") == 0) {
-        printf("типо работает pwd\n");
+//        printf("типо работает pwd\n");
         ftt_pwd(inf);
     }
     else if (ft_strcmp(inf->pipels->arg[0], "echo") == 0)
@@ -83,7 +76,7 @@ void	cheak_cmd(t_info *inf)
 //    else if (ft_strcmp(inf->pipes->arg[0], "unset") == 0)
 //        command_unset(inf);
     else {
-        printf("??else??\n");
+        printf("%s??else??%s\n",    YELLOW, RESET);
         exe_command(inf);
     }
 //    close(inf->pipe_fd_in);

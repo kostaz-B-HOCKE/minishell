@@ -122,7 +122,6 @@ char	*ft_redirect_1(char *str, int *i, t_info *inf);
 char	*get_next_line(int fd);// mood pet3
 void    put_link_to_pipe(t_info *inf);
 
-
 //info.c
 t_info	*init_info(char **env);
 int	lst_add_back(t_info *inf, t_env *env_new);
@@ -140,6 +139,7 @@ void	shell_level(t_info *inf);
 //utilus.c
 void	print_error(char *error, char *str);
 char	*ft_strjoin_free(char *s1, char *s2);
+void	ft_putendl_fd(char *s, int fd);
 
 //check_util.c
 int     check_token(char c);
@@ -184,5 +184,6 @@ void    close_fds(int t1, int t2, int t3);
 
 //ftt_cd.c
 void    ftt_cd(t_info *inf);
+int get_var_env(t_info *inf, char **way, char *key_word, int n);
 
 #endif

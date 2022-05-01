@@ -45,3 +45,9 @@ void    close_fds(int t1, int t2, int t3)
     close(t2);
     close(t3);
 }
+
+void	ft_putendl_fd(char *s, int fd)
+{
+    ft_putstr_fd(s, fd);
+    ft_putchar_fd('\n', fd);
+}
