@@ -39,7 +39,7 @@ $(LIB):
 			@make -C libft
 
 clean:
-			@$(RM) $(OBJ)
+			$(RM) $(SRBDIR)$(OBJ)
 			@make $@ -C libft
 
 fclean:		clean

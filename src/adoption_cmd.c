@@ -49,7 +49,7 @@ void    cmd_exe(t_info *inf)
 
 void	cheak_cmd(t_info *inf)
 {
-    if (!inf->pipels->arg[0]){
+	if (!inf->pipels->arg[0]){
         printf("OX NO\n");
         return;
     }

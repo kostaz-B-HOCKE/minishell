@@ -73,7 +73,6 @@ void    print_me_env(t_info *inf)
 {
     t_env *tmp;
 
-    printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 	tmp = inf->env_lst;
 	if (tmp != NULL)
 	{
