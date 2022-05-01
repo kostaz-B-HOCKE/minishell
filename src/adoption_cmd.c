@@ -70,6 +70,7 @@ void	cheak_cmd(t_info *inf)
     else if (ft_strcmp(inf->pipels->arg[0], "cd") == 0) {
         ftt_cd(inf);
     }
+
 //        command_cd(inf);
 //    else if (ft_strcmp(inf->pipes->arg[0], "export") == 0)
 //        command_export(inf);
