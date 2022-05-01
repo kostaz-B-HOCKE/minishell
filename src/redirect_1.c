@@ -8,7 +8,7 @@ int open_write_file(char *str, t_info *inf)
     str = bild_file_check(str, inf);
     if (!str)
         return (1);
-    fd = open(str, O_WRONLY | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD | S_IRGRP | S_IROTH);
+    fd = open(str, O_WRONLY | O_CREAT | O_TRUNC, S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH);
     if (fd == -1)
     {
         gl_exit = 1;

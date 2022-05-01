@@ -33,7 +33,7 @@ END			=	"\033[0m"
 all:		$(LIB) $(NAME)
 
 $(NAME):	$(OBJ)
-			@gcc $(CFLAGS) -L /Users/$(USER)/.brew/opt/readline/lib/ -lreadline -L libft -lft -o ${NAME} ${OBJ}
+			@gcc $(CFLAGS) ${OBJ} -lreadline -L libft -lft -o ${NAME}
 
 $(LIB):
 			@make -C libft

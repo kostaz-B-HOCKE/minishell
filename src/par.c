@@ -87,7 +87,7 @@ int	open_redir_1(char *file, t_info *inf)
     char *error;
 
     file = bild_file_check(file, inf);
-    fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD | S_IRGRP | S_IROTH);
+    fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH); //FOR LINUX!!!!!
     if (fd == -1)
     {
 //        error = bild_file_check(file);
