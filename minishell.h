@@ -89,6 +89,8 @@ typedef struct	s_info
 	t_env	*env_lst;
 }		t_info;
 
+extern void rl_replace_line(const char *, int);
+
 //pipex
 void	execute(char *argv, t_info *inf);
 char	*find_path(char *cmd, t_info *inf);

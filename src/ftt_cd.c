@@ -15,6 +15,7 @@ void	mercury_repl_env(t_info *inf, char *str, char *way, int symb)
 //                free(temp->str);
             temp->str = NULL;
             temp->str = ft_strjoin(str, way);
+            printf("%s\n", temp->str);
             break ;
         }
         temp = temp->next;
@@ -31,8 +32,8 @@ int get_var_env(t_info *inf, char **way, char *key_word, int n)
         if (!ft_strncmp(tmp->str, key_word, n))
         {
             *way = tmp->str + n;
-            printf("%s\n", key_word);
-            printf("%s\n", tmp->str + n);
+            // printf("%s\n", key_word);
+            // printf("%s\n", tmp->str + n);
             return (0);
         }
         tmp = tmp->next;
@@ -70,11 +71,14 @@ void    one_arg(t_info *inf)
     }
   if (chdir(way))
         do_chdir(way);
-    get_var_env(inf, &way, "PWD=", 4);
-    printf("%sCHEK%s\n",    YELLOW, RESET);
+    // get_var_env(inf, &way, "PWD=", 4);
+    // printf("%sCHEK%s\n",    YELLOW, RESET);
     mercury_repl_env(inf, "OLDPWD=", way, 7);
-    get_var_env(inf, &way, "HOME=", 5);
+    // get_var_env(inf, &way, "HOME=", 5);
     mercury_repl_env(inf, "PWD=", way, 4);
+    // get_var_env(inf, &way, "PWD=", 4);
+    // get_var_env(inf, &way, "OLDPWD=", 7);
+    // printf("qqq\n");
 }
 
 void    cd_way(t_info *inf, char *way)
@@ -126,7 +130,13 @@ void    ftt_cd(t_info *inf)
     else if (inf->pipels->arg[1] && !ft_strncmp(inf->pipels->arg[1], "..", 2) && ft_strlen(inf->pipels->arg[1]) == 2)
         cd_back(inf);
     else if (inf->pipels->arg[1] && !ft_strncmp(inf->pipels->arg[1], ".", 1) && ft_strlen(inf->pipels->arg[1]) == 1)
+    {
+        get_var_env(inf, &way, "PWD=", 4);
+        // printf("way:%s\n", way);
+        // chdir(way);
+        mercury_repl_env(inf, "OLDPWD=", way, 7);
         return ;
+    }
     else {
         get_var_env(inf, &way, "PWD=", 4);
         cd_way(inf, way);

@@ -238,8 +238,6 @@ void    parsing_s(t_info *inf, char *str)
 	tmp = inf->pipels;
     cmd_exe(inf);
 	inf->pipels = tmp;
-	printf("DEBUG #1 parsing\n");
     free_pipels(&inf->pipels);
-	printf("DEBUG #2 parsing\n");
 }
 
