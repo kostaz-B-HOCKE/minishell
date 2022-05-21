@@ -19,6 +19,8 @@ char    **put_link_to_arg(int size, t_info *inf)
     return (res);
 }
 
+
+
 t_pipels *new_list_pipe(char **arg, t_info *inf)
 {
     t_pipels *new;
@@ -28,6 +30,10 @@ t_pipels *new_list_pipe(char **arg, t_info *inf)
         return (NULL);
     new->index = inf->pipe_index;
     new->arg = arg;
+    if (inf->heredoc)
+        new->heredoc = ft_strdup(inf->heredoc);
+    else
+        new->heredoc = NULL;
     new->next = NULL;
     new->is_redirect = inf->is_redirect;
     new->fd_in = inf->fd_in;

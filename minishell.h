@@ -17,7 +17,6 @@
 # define ERROR_NAME "minishell"
 # define ONE_TOKEN "Error! Unclosed quote"
 # define TWO_TOKEN "Error! Unclosed dquote"
-# define THREE_TOKEN "Error! Unclosed pipe"
 # define SYNTAX_TOKEN "syntax error"
 # define IN_TOKEN "syntax error near unexpected token `<'"
 # define OUT_TOKEN "syntax error near unexpected token `>'"
@@ -80,8 +79,9 @@ typedef struct	s_info
     int     is_redirect;
     int     pipe_fd_in;
     int     pipe_fd_out;
-    int     is_dollar;
     int		tmp_in;
+    int     is_dollar;
+    char    *heredoc;
 
 	char	*shlvl;
     t_pipels *pipels;
@@ -89,12 +89,14 @@ typedef struct	s_info
 	t_env	*env_lst;
 }		t_info;
 
+//от readline
+extern void rl_replace_line(const char *, int);
+
 //pipex
 void	execute(char *argv, t_info *inf);
 char	*find_path(char *cmd, t_info *inf);
 int		ft_pipex(t_info *inf);
-//char    *ft_pipex_cutting(char *str, int *i, t_info *inf);
-char	*ft_pipex_cutting(char *input, int *index, t_info *inf);
+char    *ft_pipex_cutting(char *str, int *i, t_info *inf);
 
 t_info	*init_info(char **env);
 void    re_init_by_inf(t_info *inf);
@@ -106,6 +108,7 @@ void	cheak_cmd(t_info *inf);
 int		adopt_cmd(t_info *inf);
 
 //parsing
+void	pass_space_one(char *input, int *i);
 char	*delete_spese(char *str);
 void    parsing_s(t_info *inf, char *str);
 void	two_mark(t_info *inf);
@@ -185,5 +188,8 @@ void    close_fds(int t1, int t2, int t3);
 //ftt_cd.c
 void    ftt_cd(t_info *inf);
 int get_var_env(t_info *inf, char **way, char *key_word, int n);
+
+//1_utilus.c
+int	ft_strcmp(const char *s1, const char *s2);
 
 #endif

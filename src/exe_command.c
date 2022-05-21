@@ -172,13 +172,55 @@ char    **build_env(t_env *env_ls)
     return (env);
 }
 
+void    init_pipe_fds(int fd_in, int fd_out, t_info *inf)
+{
+    if (inf->pipels->index == 0)
+    {
+        dup2(fd_out, 1);
+        close(fd_in);
+        close(fd_out);
+        close(inf->tmp_in);
+    }
+    else if (inf->pipels->index == inf->pipe_index - 1)
+    {
+        dup2(inf->tmp_in, 0);
+        close(fd_out);
+        close(inf->tmp_in);
+    }
+    else
+    {
+        dup2(fd_out, 1);
+        dup2(inf->tmp_in, 0);
+        close(fd_out);
+        close(inf->tmp_in);
+    }
+}
+
+void    exe_heredoc(t_pipels *pipels)
+{
+    int pipe_fd[2];
+
+    if (pipe(pipe_fd) == -1)
+    {
+        perror(ERROR_NAME);
+        exit(EXIT_FAILURE);
+    }
+    write(pipe_fd[1], pipels->heredoc, ft_strlen(pipels->heredoc));
+    close(pipe_fd[1]);
+    dup2(pipe_fd[0], 0);
+}
+
 void    child(char *cmd, t_info *inf, int ft_in, int fd_out)
 {
     char **argv;
 
     argv = re_bild_argv(inf->pipels->arg, inf);
-//    if (inf->pipels->is_heredoc)
-//    if (inf->is_pipe);
+//    if (inf->pipels->is_heredoc)  //работает
+//        exe_heredoc(inf->pipels);
+    if (inf->is_pipe) {
+        printf("изменяю fd_s\n");
+        init_pipe_fds(ft_in, fd_out, inf);
+    }
     init_fds(inf->pipels->fd_in, inf->pipels->fd_out, inf->pipels->fr_re_out);
     execve(argv[0], argv, build_env(inf->env_lst));
     micro_print_err(cmd);
@@ -193,6 +235,7 @@ void    parent(pid_t pid, t_info *inf, int pipe_in, int pipe_out)
     if (inf->is_pipe)
     {
         close(pipe_out);
+        printf("%darvin\n", inf->tmp_in);
         dup2(pipe_in, inf->tmp_in);
     }
     waitpid(pid, &return_exit, 0);
@@ -204,6 +247,7 @@ void    parent(pid_t pid, t_info *inf, int pipe_in, int pipe_out)
     close(pipe_out);
 }
 
+/////
 void    exe_fork(char *cmd, t_info *inf)
 {
     pid_t   pid;
@@ -215,10 +259,10 @@ void    exe_fork(char *cmd, t_info *inf)
         exit(EXIT_FAILURE);
     }
     else if (pid == 0) {
-        child(cmd, inf, inf->pipels->fd_in, inf->pipels->fd_out);
+        child(cmd, inf, inf->pipe_fd_in, inf->pipe_fd_out);
     }
     else {
-        parent(pid, inf, inf->pipels->fd_in, inf->pipels->fd_out);
+        parent(pid, inf, inf->pipe_fd_in, inf->pipe_fd_out);
     }
 }
 

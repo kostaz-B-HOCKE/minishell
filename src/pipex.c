@@ -33,13 +33,13 @@ void	execute_final(t_info *inf, int i)
 	if (pid == 0)
 	{
 		close(fd[0]);
-//		dup2(fd[1], STDOUT_FILENO);
+		dup2(fd[1], STDOUT_FILENO);
 		execute(inf->split_pipex[i], inf);
 	}
 	else
 	{
-//		close(fd[1]);
-//		dup2(fd[0], STDIN_FILENO);
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
 		waitpid(pid, NULL, 0);
 	}
 }
@@ -99,7 +99,66 @@ int	ft_pipex(t_info *inf)
 //    return (str);
 //}
 
+int cheak_pipe_token(char *str, t_info *inf)
+{
+    if (!inf->is_heredoc && !inf->is_redirect && !inf->link) {
+        printf("%s: %s\n", ERROR_NAME, PIPE_TOKEN);
+        free(str);
+        return (1);
+    }
+    return (0);
+}
+
+//char	*parse_pipe(char *input, int *index, t_obj *o)
+//{
+//    char	*line;
+//    char	*end;
+//    int		n;
+//    n = *index;
+//    line = ft_strdup(input);
+//    line[n++] = 0;
+//    if (ft_strlen(line) != 0)
+//        put_str_to_link(line, o);
+//    else
+//        free(line);
+//    if (check_pipe_token(input, o))
+//        return (NULL);
+//    put_link_to_pipe(o);
+//    pass_space_one(input, &n);
+//    if (check_p_token(input, n))
+//        return (NULL);
+//    end = ft_substr(input, n, ft_strlen(input));
+//    if (check_unclosed_pipe(input, end))
+//        return (NULL);
+//    *index = -1;
+//    free(input);
+//    return (end);
+//}
 //не работает
+
+int	check_p_token(char *input, int i)
+{
+    if (input[i] == '|')
+    {
+        printf("%s: %s\n", ERROR_NAME, PIPE_TOKEN);
+        free(input);
+        return (1);
+    }
+    return (0);
+}
+
+int	check_unclosed_pipe(char *input, char *end)
+{
+    if (ft_strlen(end) == 0)
+    {
+        printf("%s: %s\n", ERROR_NAME, "Error! Unclosed pipe");
+        free(input);
+        free(end);
+        return (1);
+    }
+    return (0);
+}
+
 char	*ft_pipex_cutting(char *str, int *i, t_info *inf)
 {
     char	*tmp;
@@ -107,30 +166,24 @@ char	*ft_pipex_cutting(char *str, int *i, t_info *inf)
     int		j;
 
     j = *i;
-    tmp = ft_substr(str, 0, j);
-    printf("1:%s\n", tmp);
+//    tmp = ft_substr(str, 0, j);
     tmp = ft_strdup(str);
-    printf("2:%s\n", tmp);
     tmp[j++] = 0;
-    printf("2:%s\n", tmp);
-
-
-    if (ft_strlen(tmp) != 0) //зачем
+    if (ft_strlen(tmp) != 0)
         link_to_str(tmp, inf);
-    else
+    else {
         free(tmp);
-    printf("ok2\n");
-    print_me_link(inf);
-//    if (check_pipe_token(input, inf))
-//        return (NULL);
+    }
+//    print_me_link(inf);
+    if (cheak_pipe_token(str, inf))
+        return (NULL);
     put_link_to_pipe(inf);
-//    pass_space_one(input, &j);
-//    if (check_p_token(input, j))
-//        return (NULL);
+    pass_space_one(str, &j);
+    if (check_p_token(str, j))
+        return (NULL);
     end = ft_substr(str, j, ft_strlen(str));
-    printf("%s\n", end);
-//    if (check_unclosed_pipe(input, end))
-//        return (NULL);
+    if (check_unclosed_pipe(str, end))
+        return (NULL);
     *i = -1;
     free(str);
     return (end);

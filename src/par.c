@@ -1,5 +1,11 @@
 #include "../minishell.h"
 
+void	pass_space_one(char *input, int *i)
+{
+    while (input[*i] == ' ')
+        (*i)++;
+}
+
 void	pass_space_two(char *input, int *i)
 {
     while (input[*i] && input[*i] != ' '
@@ -151,13 +157,13 @@ void    read_heredoc(char *str, t_info *inf)
 char	*ft_chek_redirect(char *str, int *i, t_info *inf)
 {
 	if (str[*i] == '>' && str[*i + 1] == '>')
-        printf(">>!\n");
+        printf("типо работает >>!\n");
 	else if (str[*i] == '>')
         str = ft_redirect_1(str, i, inf);
 	else if (str[*i] == '<' && str[*i + 1] == '<')
-        printf("<<\n");
+        printf("типо работает <<!\n");
 	else if (str[*i] == '<')
-		printf("<\n");
+		printf("типо работает <!\n");
 	return (str);
 }
 
@@ -178,13 +184,40 @@ char	*parse_spaces(char *input, int *index, t_info *inf)
     *index = -1;
     return (end);
 }
+//новый код
+char    **porting_env(t_info *info)
+{
+    t_env   *tmp;
+    char **super_str;
+    int i;
+
+    i = 0;
+    tmp = info->env_lst;
+    while (tmp->next)
+    {
+        i++;
+        tmp = tmp->next;
+    }
+    super_str = (char **)malloc(sizeof(char *) * (i + 1));
+    if (!super_str)
+        return (NULL);
+    i = 0;
+    tmp = info->env_lst;
+    while (tmp->next)
+    {
+        super_str[i++] = tmp->str;
+        tmp = tmp->next;
+    }
+    super_str[i++] = ft_strdup(tmp->str);
+    super_str[i] = NULL;
+    return (super_str);
+}
 
 char    *chek_symbol_str(t_info *inf, char *str, int *i)
 {
 	char **env;
 
-	env = inf->env;
-//        printf("str:%s\n", str);
+    env = porting_env(inf); //изменили
 	while (str[++(*i)])
 	{
 		if (str[*i] == '\'')
@@ -193,8 +226,10 @@ char    *chek_symbol_str(t_info *inf, char *str, int *i)
 			str = ft_gap2(str, i, '\"', inf);
 		else if (str[*i] == '$' && (ft_isalnum(str[*i + 1]) || str[*i + 1] == '?'))
             str = ft_dollar_pv(str, i, env);
-//        else if (str[*i] == '|')
-//            ft_pipex_cutting(str, &i, inf);
+        else if (str[*i] == '|') {
+//            printf("%sВижу пайп%s\n",    RED, RESET);
+            str = ft_pipex_cutting(str, i, inf);
+        }
 //		else if (str[*i] == '>' || str[*i] == '<')
 //			str = ft_chek_redirect(str, i, inf);
 		else if (str[*i] && str[*i] == ' ')
@@ -204,8 +239,8 @@ char    *chek_symbol_str(t_info *inf, char *str, int *i)
 	}
     if (ft_strlen(str) != 0)
         link_to_str(str, inf);
+//    print_list_pipels(inf);
     put_link_to_pipe(inf);
-
 //    print_list_pipels(inf);
 //  print_me_link(inf);
 //	printf("++++++++++++++++++++++++++++++++++++++\n%s\n", str);
@@ -240,4 +275,3 @@ void    parsing_s(t_info *inf, char *str)
 	inf->pipels = tmp;
     free_pipels(&inf->pipels);
 }
-

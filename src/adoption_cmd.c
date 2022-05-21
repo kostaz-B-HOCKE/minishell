@@ -23,9 +23,7 @@ void    cmd_exe(t_info *inf)
 
     size = pipes_size(inf->pipels);
     if (size == 1)
-    {
         cheak_cmd(inf);
-    }
     else
     {
 //        printf("SEE PIPE\n");
@@ -36,6 +34,7 @@ void    cmd_exe(t_info *inf)
         }
         close(p_fd[1]);
         inf->tmp_in = p_fd[0];
+        //возможно десь
         while (inf->pipels)
         {
             cheak_cmd(inf);
@@ -56,22 +55,16 @@ void	cheak_cmd(t_info *inf)
     int_inf_fd(inf);
     if (ft_strcmp(inf->pipels->arg[0], "env") == 0)
         print_me_env(inf);
-//        command_env(inf);
     else if (ft_strcmp(inf->pipels->arg[0], "pwd") == 0) {
-//        printf("типо работает pwd\n");
         ftt_pwd(inf);
     }
     else if (ft_strcmp(inf->pipels->arg[0], "echo") == 0)
-    {
         ftt_echo(inf);
-    }
     else if (!ft_strcmp(inf->pipels->arg[0], "exit"))
         ftt_exit(inf->pipels->arg, inf);
     else if (ft_strcmp(inf->pipels->arg[0], "cd") == 0) {
         ftt_cd(inf);
     }
-
-//        command_cd(inf);
 //    else if (ft_strcmp(inf->pipes->arg[0], "export") == 0)
 //        command_export(inf);
 //    else if (ft_strcmp(inf->pipes->arg[0], "unset") == 0)
@@ -80,13 +73,8 @@ void	cheak_cmd(t_info *inf)
         printf("%s??else??%s\n",    YELLOW, RESET);
         exe_command(inf);
     }
-//    close(inf->pipe_fd_in);
-//    close(inf->pipe_fd_out);
     close(inf->pipe_fd_in);
     close(inf->pipe_fd_out);
 }
 
-//int adopt_cmd_pipe(t_info *inf)
-//{
-//
-//}
+

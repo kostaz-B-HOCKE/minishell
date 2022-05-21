@@ -51,3 +51,19 @@ void	ft_putendl_fd(char *s, int fd)
     ft_putstr_fd(s, fd);
     ft_putchar_fd('\n', fd);
 }
+
+int	ft_strcmp(const char *s1, const char *s2)
+{
+    size_t	i;
+
+    i = 0;
+    while ((*s1 || *s2))
+    {
+        if (*s1 != *s2)
+            return ((unsigned char )*s1 - (unsigned char )*s2);
+        s1++;
+        s2++;
+        i++;
+    }
+    return (0);
+}

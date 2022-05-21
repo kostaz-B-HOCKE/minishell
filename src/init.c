@@ -65,6 +65,7 @@ t_info	*init_info(char **env)
     inf->is_heredoc = 0;
     inf->is_dollar = 0;
     inf->pipe_index = 0;
+    inf->heredoc = NULL;
 	env_move(inf);
 	return (inf);
 }
@@ -73,7 +74,7 @@ void    print_me_env(t_info *inf)
 {
     t_env *tmp;
 
-    printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+//    printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 	tmp = inf->env_lst;
 	if (tmp != NULL)
 	{
@@ -108,20 +109,23 @@ void    print_list_pipels(t_info *inf)
 {
     t_pipels *tmp;
     int i;
+    int j = 0;
 
     tmp = inf->pipels;
     if (tmp != NULL)
     {
         while (tmp->next)
         {
-            printf("NO NULL\n");
+//            printf("NO NULL\n");
             i = -1;
+            printf("|%d|", j++);
             while (tmp->arg[++i])
                 printf("i%d:%s ", i, tmp->arg[i]);
             printf("\n");
             tmp = tmp->next;
         }
         i = -1;
+        printf("|%d|", j++);
         while (tmp->arg[++i])
             printf("i%d:%s ", i, tmp->arg[i]);
         printf("\n");
@@ -130,11 +134,3 @@ void    print_list_pipels(t_info *inf)
         printf("no list pipels\n");
 }
 
-void    re_init_by_inf(t_info *inf)
-{
-    inf->fd_in = -1;
-    inf->fd_out = -1;
-//    inf->
-
-
-}
