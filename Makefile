@@ -1,49 +1,47 @@
 NAME		= minishell
+SRCS_DIR	= src/
+OBJS_DIR	= obj/
+INCS_DIR	= include
+SRCS_F		= main.c space_pusher.c env.c env_utils.c dollar_expander.c lexer.c quotes_expander.c utils_str.c \
+					parser.c parser_utils.c executor.c heredoc.c validator.c builtins.c executor_utils.c ft_export.c \
+					ft_export_util.c ft_exit.c	shlv.c executor_utils2.c ft_cd.c util_norm.c
+SRCS		= $(addprefix $(SRCS_DIR), $(SRCS_F))
+OBJS_F		= $(patsubst %.c, %.o, $(SRCS_F))
+DEPS_F		= $(patsubst %.c, %.d, $(SRCS_F))
+OBJS		= $(addprefix $(OBJS_DIR), $(OBJS_F))
+DEPS		= $(addprefix $(OBJS_DIR), $(DEPS_F))
 
-SRB_DIR		= src/
+CC			= gcc
+CFLAGS		= -Wall -Wextra -Werror -MMD
+LFLAGS		= -Llibft -lft -L/Users/$(USER)/.brew/Cellar/readline/8.1.2/lib -lreadline
+LIB			= libft.a
+LIB_DIR		= libft/
 
-# SRB		= $(addprefix $(SRB_DIR), main1.c)
-SRB		= $(addprefix $(SRB_DIR), main.c execve_unil.c pipex.c init.c \
-					adoption_cmd.c par.c shell_level.c utilus.c ft_dollar.c ft_qap.c \
-					utilus_free.c check_util.c redirect_1.c reading_get_line.c \
-					list_command_util.c	list_command.c  parsin.c  pipe_list_utilus.c      \
-					exe_command.c error_util.c execute_ft_pipe.c ft_pwd.c				\
-					ftt_echo.c ftt_cd.c)
+all: $(NAME)
 
-#SRB		= $(addprefix $(SRB_DIR), main.c)
+$(OBJS_DIR)%.o : $(SRCS_DIR)%.c
+		$(CC) $(CFLAGS) -I$(INCS_DIR) -c $< -o $@
 
-OBJ			= $(SRB:.c=.o)
+$(OBJS_DIR) :
+		mkdir -p $@
 
-LIB			= libft/libft.a
+$(NAME):  $(OBJS_DIR) $(OBJS) $(LIB_DIR)$(LIB) Makefile
+		$(CC) $(CFLAGS) $(OBJS) $(LFLAGS) -o $@
 
-#CFLAGS		= -Wall -Wextra -Werror
-CFLAGS		=
-RED			=	"\033[1;31m"
-BLUE		=	"\033[1;34m"
-YELLOW		=	"\033[1;33m"
-WHITE		=	"\033[1;37m"
-GREEN		=	"\033[1;32m"
-PURPLE		=	"\033[1;35m"
-GRAY		=	"\033[1;30m"
-END			=	"\033[0m"
-#@echo ${YELLOW} "\n< .o files -> removed >\n" ${END}
+$(LIB_DIR)$(LIB) : ;
+		make -C $(LIB_DIR)
 
-.PHONY:		all clean fclean re
+clean :
+	rm -rf $(OBJS_DIR)
+	make clean -C $(LIB_DIR)
 
-all:		$(LIB) $(NAME)
+fclean : clean
+	rm -f $(NAME)
+	make fclean -C $(LIB_DIR)
 
-$(NAME):	$(OBJ)
-			@gcc $(CFLAGS) -L /Users/$(USER)/.brew/opt/readline/lib/ -lreadline -L libft -lft -o ${NAME} ${OBJ}
+re: fclean all
 
-$(LIB):
-			@make -C libft
+.PHONY:
+		all clean fclean re bonus
 
-clean:
-			@$(RM) $(OBJ)
-			@make $@ -C libft
-
-fclean:		clean
-			@$(RM) $(NAME)
-			@make $@ -C libft
-
-re:			fclean all
+-include $(DEPS) $(DEPS_B)

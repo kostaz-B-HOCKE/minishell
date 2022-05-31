@@ -1,100 +1,113 @@
-#include "../minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rjada <rjada@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/27 13:39:41 by rjada             #+#    #+#             */
+/*   Updated: 2022/05/30 19:15:25 by rjada            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	handler(int sig)
+#include "../include/minishell.h"
+
+//добавить
+void	minishell_patch(t_info *info)
 {
-    (void)sig;
-    rl_on_new_line();
-    rl_redisplay();
-    write(1, "  \n", 3);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-    gl_exit = 1;
-}
+	char	*str;
+	char	*str3;
+	char	*str1;
 
-void	sig_handler(void)
-{
-    struct sigaction	sa;
-    sigset_t			set;
-
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGTSTP, SIG_IGN);
-    sa.sa_handler = handler;
-    sigemptyset(&set);
-    sigaddset(&set, SIGINT);
-    sa.sa_mask = set;
-    sigaction(SIGINT, &sa, NULL);
-}
-
-int	start_readline(t_info *inf)
-{
-	inf->split_line = ft_split(inf->st_line, ' ');
-	if (!find_path(inf->split_line[0], inf))
+	str = malloc(sizeof(char) * 1000);
+	if (!str)
+		return ;
+	str = getcwd(str, 1000);
+	if (str)
 	{
-		write(1, "zsh: command not found: ", 24);
-		ft_putstr_fd(inf->split_line[0], 1);
-		write(1, "\n", 1);
+		str1 = ft_strjoin(str, "/./minishell");
+		free(str);
+		str3 = ft_strjoin("_=", str1);
+		free(str1);
+		search_env(info, str3);
+		free(str3);
 	}
-	else
+}
+
+void	init(t_info **info, char **envp)
+{
+	*info = (t_info *)malloc(sizeof(t_info));
+	ft_memset(*info, 0, sizeof(t_info));
+	(*info)->env = init_env(envp);
+	(*info)->envp = set_envp((*info)->env);
+	(*info)->infile = NULL;
+	(*info)->outfile = NULL;
+	(*info)->here_doc = NULL;
+	(*info)->commands = NULL;
+	(*info)->append = 0;
+	minishell_patch(*info);
+}
+
+void	re_init(t_info **info)
+{
+	signal(SIGINT, sig_handler);
+	signal(SIGQUIT, SIG_IGN);
+	if ((*info)->infile)
+		free((*info)->infile);
+	if ((*info)->outfile)
+		free((*info)->outfile);
+	if ((*info)->here_doc)
+		free((*info)->here_doc);
+	(*info)->infile = NULL;
+	(*info)->outfile = NULL;
+	(*info)->here_doc = NULL;
+	(*info)->append = 0;
+}
+
+void	shell_loop(t_info **info)
+{
+	while (1)
 	{
-		inf->line = inf->st_line;
-//		if (parsing_s(inf))
-//			return (1);
-		cheak_cmd(inf);
+		re_init(info);
+		(*info)->line = readline("minishell $ ");
+		if (!(*info)->line)
+			break ;
+		history(info);
+		if (find_not_pair_quote((*info)->line))
+		{
+			ft_putendl_fd("minishell: unmatched quotes", STDERR);
+			free((*info)->line);
+			continue ;
+		}
+		push_spaces(&((*info)->line));
+		(*info)->tk_list = lexer((*info)->env, (*info)->line);
+		if (!(*info)->tk_list)
+		{
+			free((*info)->line);
+			continue ;
+		}
+		parser(&((*info)->tk_list), *info);
+		ft_lstclear(&((*info)->tk_list), free);
+		executor(*info);
+		destructor(info);
 	}
-	return (0);
 }
 
-void	two_mark(t_info *inf)
+int	main(int argc, char **argv, char **envp)
 {
-	int i;
+	t_info	*info;
 
-//	inf->line =
-	printf("|\"|\n");
+	(void)argv;
+	if (argc != 1)
+		return (1);
+	g_exit = 0;
+	init(&info, envp);
+	shell_level(info);
+	shell_loop(&info);
+	rl_clear_history();
+	ft_split_free(info->envp);
+	env_clear(&info->env, free);
+	free(info);
+	ft_putendl_fd("exit", STDOUT);
+	exit(0);
 }
-
-int	cheak_pipe(t_info *inf)
-{
-	inf->line = inf->st_line;
-	if (ft_strnstr(inf->st_line, "|", ft_strlen(inf->st_line)))
-	{
-		//работает, закрывает основныой процесс нужно запустить в дочернем
-//		ft_pipex(inf);
-		printf("|||\n");
-	}
-	else
-		start_readline(inf);
-	return (0);
-}
-
-void    start_shell(t_info *inf)
-{
-    char *str;
-
-    while (1)
-    {
-        sig_handler();//control + D выдает сегу
-        str = readline("mimishell: ");
-        if (!str)
-            break ;
-		if (ft_strlen(str) != 0)
-			add_history(str);
-        parsing_s(inf, str);
-    }
-}
-
-int main(int ac, char **argv, char **env)
-{
-    char 	*str;
-
-    t_info	*inf;
-	t_env	*tmp;
-
-	gl_exit = 0;
-	inf = init_info(env);
-//  print_me_env(inf);
-	shell_level(inf);
-//	printf("__/__/__/__/__/__/__/__/__/__/__/\n");
-    start_shell(inf);
-}
-
